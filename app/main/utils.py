@@ -44,5 +44,5 @@ def infix_to_postfix(infix_exp: str) -> str:
     while stack: 
         postfix_exp += stack.pop()
     
-    print(postfix_exp)
+    #print(postfix_exp)
     return postfix_exp
