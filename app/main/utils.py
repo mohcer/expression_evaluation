@@ -1,6 +1,7 @@
 """
 Problem Domain: defines all the util functions
 """
+import re
 
 OPERATORS = set(['+', '-', '*', '/', '(', ')','^'])
 PRIORITY = {
@@ -11,6 +12,12 @@ PRIORITY = {
     '^': 3
 }
 
+def tokenize_string(input_str: str):
+    """
+    :purpose: for the given input string it tokenizes and creates a list of chars
+    """
+    return re.findall(r"(\b\w*[\.]?\w+\b|[\(\)\+\*\-\/])", input_str)
+        
 def infix_to_postfix(infix_exp: str) -> str:
     """
     :purpose: for the give infix_expression converts it to a postfix expression
@@ -18,8 +25,8 @@ def infix_to_postfix(infix_exp: str) -> str:
     stack = []
 
     postfix_exp = ''
-
-    for chr in infix_exp:
+    
+    for idx, chr in enumerate(infix_exp):
         if chr not in OPERATORS:
             # if chr is an operand append it to the postfix_exp string
             postfix_exp += chr
@@ -38,11 +45,10 @@ def infix_to_postfix(infix_exp: str) -> str:
             # pop and append to postfix exp until the top 
             while stack and stack[-1] != '(' and PRIORITY[chr] <= PRIORITY[stack[-1]]:
                 postfix_exp += stack.pop()
-            
+        
             stack.append(chr)
     
     while stack: 
         postfix_exp += stack.pop()
     
-    #print(postfix_exp)
     return postfix_exp

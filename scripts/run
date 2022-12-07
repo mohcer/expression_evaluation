@@ -1,0 +1,3 @@
+#!/bin/bash 
+
+python3 app/main/expression_tree_service.py 

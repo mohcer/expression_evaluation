@@ -2,6 +2,7 @@
 Problem Domain: It describes all the models that describe TreeNode, ExpressionTree etc entities 
 """
 import re
+from app.main.utils import tokenize_string
 
 class TreeNode:
     """
@@ -28,19 +29,13 @@ class ExpressionTree:
         :purpose: for the given charachter check if it is an operator
         return True if found False otherwise
         """
-        return char in [" ", "+", "-", "*", "/", "^"]
+        return char in ["+", "-", "*", "/", "^", "~"]
 
-    def check_if_leafnode(node: TreeNode) -> bool:
+    def check_if_leafnode(self, node: TreeNode) -> bool:
         """
         :purpose: for the given node check if its a leaf node
         """
         return node.left_ref is None and node.right_ref is None
-
-    def tokenize_string(self, input_str: str):
-        """
-        :purpose: for the given input string it tokenizes and creates a list of chars
-        """
-        return re.findall(r"(\b\w*[\.]?\w+\b|[\(\)\+\*\-\/])", input_str)
 
     def generate_exp_tree(self, postfix_exp):
         """
@@ -48,8 +43,6 @@ class ExpressionTree:
         """
         stack = []
 
-        print(f"Inside generaate tree")
-        print(postfix_exp)
         # In postfix expression the operators will always be last
         # and the last operator is the root element
         self.__root_node = TreeNode(postfix_exp[-1])
@@ -58,12 +51,14 @@ class ExpressionTree:
 
         # traverse the remaining exp from the right end
         # reverse the exp
-        temp_exp = list(reversed(self.tokenize_string(postfix_exp[:-1])))
+        temp_exp = list(reversed(tokenize_string(postfix_exp[:-1])))
         
+
         for exp_chr in temp_exp:
             top_node = stack[-1]
         
-            temp_node = TreeNode(exp_chr)
+            temp_node = TreeNode("-") if exp_chr == '~' else TreeNode(exp_chr)
+
             if top_node.right_ref is None:
                 top_node.right_ref = temp_node
 
@@ -78,7 +73,6 @@ class ExpressionTree:
                 if self.check_isoperator(exp_chr):
                     stack.append(temp_node)
             
-            print(f"stack : {stack}")
 
     def process_sub_exp(self, op, a, b):
         """
@@ -86,6 +80,7 @@ class ExpressionTree:
         """
         sub_exp_val = 0
 
+        #print(f"got a: {a}, b: {b}, operator: {op}")
         if op == '+':
             sub_exp_val = a + b
         elif op == '-':
@@ -116,13 +111,13 @@ class ExpressionTree:
 
     def display_tree(self, root):
         """
-        :purpose: It displays the constructed expression tree by doing an inorder traversal
+        :purpose: It displays the constructed expression tree
         """
-        def height(root):
-            return 1 + max(height(root.left_ref), height(root.right_ref)) if root else -1 
+        def get_height(root):
+            return 1 + max(get_height(root.left_ref), get_height(root.right_ref)) if root else -1 
 
-        nlevels = height(root)
-        width =  pow(2,nlevels+1)
+        no_levels = get_height(root)
+        width =  pow(2,no_levels+1)
 
         q=[(root,0,width,'c')]
         levels=[]
@@ -155,5 +150,4 @@ class ExpressionTree:
                 pstr+=' '*(n[2]-pre-len(valstr))+valstr #correct the potition acording to the number size
                 pre = n[2]
             print(linestr)
-            print(pstr) 
-        
+            print(pstr)
