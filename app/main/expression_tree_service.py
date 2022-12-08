@@ -32,7 +32,7 @@ class ExpressionTreeService:
 
 
 if __name__ == '__main__':
-    infix_exp = input("\n Please enter the expression string : ")
+    infix_exp = input("\n Please enter the expression string, pls enter operator from only ['+', '-', '/', '*', '(', ')'] with proper parenthesis : ")
 
     expression_tree_service = ExpressionTreeService(infix_exp)
     print("\n The Expression Tree is created successfully! \n")
