@@ -53,11 +53,11 @@ class ExpressionTree:
         # reverse the exp
         temp_exp = list(reversed(tokenize_string(postfix_exp[:-1])))
         
-
+        print(temp_exp)
         for exp_chr in temp_exp:
             top_node = stack[-1]
         
-            temp_node = TreeNode("-") if exp_chr == '~' else TreeNode(exp_chr)
+            temp_node = TreeNode(exp_chr)
 
             if top_node.right_ref is None:
                 top_node.right_ref = temp_node

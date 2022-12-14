@@ -16,7 +16,7 @@ def tokenize_string(input_str: str):
     """
     :purpose: for the given input string it tokenizes and creates a list of chars
     """
-    return re.findall(r"(\b\w*[\.]?\w+\b|[\(\)\+\*\-\/])", input_str)
+    return re.findall(r"([-+]?\d*\w+|[\(\)\+\*\-\/])", input_str)
         
 def infix_to_postfix(infix_exp: str) -> str:
     """
@@ -26,6 +26,8 @@ def infix_to_postfix(infix_exp: str) -> str:
 
     postfix_exp = ''
     
+    #infix_exp = tokenize_string(infix_exp)
+
     for idx, chr in enumerate(infix_exp):
         if chr not in OPERATORS:
             # if chr is an operand append it to the postfix_exp string
@@ -42,13 +44,17 @@ def infix_to_postfix(infix_exp: str) -> str:
             # pop the '('
             stack.pop()
         else: 
-            # pop and append to postfix exp until the top 
-            while stack and stack[-1] != '(' and PRIORITY[chr] <= PRIORITY[stack[-1]]:
-                postfix_exp += stack.pop()
-        
-            stack.append(chr)
+            if chr=='-' and str(infix_exp[idx + 1]).isdigit():
+                postfix_exp += chr
+            else:
+                # pop and append to postfix exp until the top 
+                while stack and stack[-1] != '(' and PRIORITY[chr] <= PRIORITY[stack[-1]]:
+                    postfix_exp += stack.pop()
+            
+                stack.append(chr)
     
     while stack: 
         postfix_exp += stack.pop()
     
+    print(postfix_exp)
     return postfix_exp
